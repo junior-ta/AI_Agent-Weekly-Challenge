@@ -1,24 +1,39 @@
 import { streamText, stepCountIs } from "ai";
-import { ollama } from "@ai-sdk/ollama";
+import { ollama } from 'ollama-ai-provider-v2';
 import { countLettersTool } from "@/app/tools/countLetters";
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  return streamText({
-    model: ollama("llama3.1"), // must match what you pulled in Ollama
+  const result = await streamText({
+    model: ollama("llama3.1"),
     messages,
     tools: {
       countLetters: countLettersTool,
     },
     system: `
-You are a helpful conversational chatbot.
+You are a helpful assistant.
 
-If the user asks something requiring deterministic precision
-(counting letters, counting words, numeric checks, exact matching),
-use the appropriate tool instead of guessing.
+If a request requires exact counting or deterministic logic,
+you MUST use the appropriate tool instead of guessing.
     `,
-    // Safety guard against infinite tool loops
     stopWhen: stepCountIs(4),
-  }).toResponse();
+  }).response; 
+
+  // Get the last assistant message
+  const lastMessage = result.messages[result.messages.length - 1];
+
+  // Extract text safely
+  let text = "";
+  if (lastMessage?.role === "assistant") {
+    if (typeof lastMessage.content === "string") {
+      text = lastMessage.content;
+    } else if (Array.isArray(lastMessage.content)) {
+      text = lastMessage.content
+        .map((part: any) => part.text ?? "")
+        .join("");
+    }
+  }
+
+  return Response.json({ text });
 }
