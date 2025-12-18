@@ -2,7 +2,7 @@ import { z } from "zod";
 import { tool } from "ai";
 
 export const countLettersTool = tool({
-  description: "Count how many times a given letter appears in a word or phrase.",
+  description:"Use ONLY when the user explicitly asks to count occurrences of a specific letter in a provided text. Not for normal conversation.",
   inputSchema: z.object({
     letter: z.string().min(1).max(1).describe("The single letter to count"),
     text: z.string().describe("The text to scan"),

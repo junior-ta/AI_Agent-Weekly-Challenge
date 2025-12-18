@@ -6,16 +6,25 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = await streamText({
-    model: ollama("llama3.1"),
+    model: ollama("llama3"),
     messages,
     tools: {
       countLetters: countLettersTool,
     },
     system: `
-You are a helpful assistant.
+You are a helpful conversational assistant.
 
-If a request requires exact counting or deterministic logic,
-you MUST use the appropriate tool instead of guessing.
+You have access to tools, but you should ONLY use them silently
+when a task requires exact, deterministic computation on text
+(such as counting letters, characters, or exact matches).
+
+For normal conversation, explanations, opinions, or creative replies:
+- DO NOT mention tools
+- DO NOT suggest tools
+- Respond naturally like a normal chatbot
+
+Never say that a tool "can help" unless you are actively using it.
+If you do not need a tool, behave as if no tools exist.
     `,
     stopWhen: stepCountIs(4),
   }).response; 
