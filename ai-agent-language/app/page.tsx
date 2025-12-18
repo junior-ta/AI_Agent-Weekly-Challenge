@@ -67,10 +67,11 @@ export default function Page() {
               margin: 0,
             }}
           >
-            Agent for letters counting (with ollama!!!)
+            Conversation Agent(specialized in counting letters with no hallucination!!!)
           </h1>
           <p style={{ marginTop: 10, marginBottom: 0, color: "#b8c3df" }}>
-            This uses a Local model and tool calling. Try: <b>“How many r’s are in strawberry?”</b>
+            This uses a Local model and tool calling for counting letters. <br />
+            Try: <b>“How many r’s are in strawberry?”</b>
           </p>
         </header>
 

@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = await streamText({
-    model: ollama("llama3"),
+    model: ollama("llama3.1"), //'openai/gpt-5'
     messages,
     tools: {
       countLetters: countLettersTool,
